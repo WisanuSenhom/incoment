@@ -1,96 +1,50 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
-    <title>รพ.สต.หนองทุ่ม</title>
-  </head>
-  <body>
-    <center>
-   <img src="https://lh4.googleusercontent.com/AhKq01ZP9Rdff5Rysqn1GiiES06FiezyZzipiGFtB-sRYDkPr3Ia5syDoza-J_90cndxVQ" height="200px" , width="200px" />
-      <h1>
-        กำลังเข้าสู่ แบบสอบถามประวัติการเดินทาง กรุณารอซักครู่...
-      </h1>  
-    </center>
-
-<script>
-  
-var myLiffId = "1654797991-WVdogNoa";
-  
-window.onload = function() {
-    // DO NOT CHANGE THIS
-    let myLiffId = defaultLiffId;
-    initializeLiff(myLiffId);
-};
-
-/**
-* Initialize LIFF
-* @param {string} myLiffId The LIFF ID of the selected element
-*/
-function initializeLiff(myLiffId) {
-    liff
-        .init({
-            liffId: myLiffId
-        })
-        .then(() => {
-            // start to use LIFF's api
-            initializeApp();
-        })
-        .catch((err) => {
-            console.log(err.code, err.message);
-            document.getElementById("liffAppContent").classList.add('hidden');
-            document.getElementById("liffInitErrorMessage").classList.remove('hidden');
-        });
-}
-
-/**
- * Initialize the app by calling functions handling individual app components
- */
-function initializeApp() {
-    console.log('liff version :: ' + liff.getVersion())
-    registerButtonHandlers();
-
-    // check การ login
-    if (liff.isLoggedIn()) {
-        console.log('loged in');
-        
-        // ถ้า login ไว้อยู่แล้ว ให้ redirect ไปยังหน้าที่ตั้งไว้
-        window.location.replace("https://liff.line.me/1654797991-WVdogNoa");
-    } else {
-        console.log('not loged in');
-      
-        // ปุ่มสั่งให้ไป login จะกดไม่ได้จนกว่าจะมั่นใจว่ายังไม่ได้ login จริงๆ
-        document.getElementById('liffLoginButton').disabled = false;
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LIFF - LINE Front-end Framework</title>
+  <style>
+    body { margin: 16px }
+    button, img { display: none; width: 40% }
+    button { padding: 16px }
+  </style>
+</head>
+<body>
+  <h1>Page 2</h1>
+  <img id="pictureUrl">
+  <button id="btnLogIn" onclick="logIn()">Log In</button>
+  <button id="btnLogOut" onclick="logOut()">Log Out</button>
+  <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+  <script>
+    function logOut() {
+      liff.logout()
+      window.location.reload()
     }
-}
-
-/**
-* Register event handlers for the buttons displayed in the app
-*/
-function registerButtonHandlers() {
-    document.getElementById('liffLoginButton').addEventListener('click', function() {
-        if (!liff.isLoggedIn()) {
-            // สั่งให้ทำการ login ซะ เสร็จแล้วให้ redirect ไปยังหน้าที่ตั้งไว้
-            liff.login({
-                redirectUri: redirectUrl
-            });
+    function logIn() {
+      liff.login({ redirectUri: window.location.href })
+    }
+    async function getUserProfile() {
+      const profile = await liff.getProfile()
+      document.getElementById("pictureUrl").style.display = "block"
+      document.getElementById("pictureUrl").src = profile.pictureUrl
+    }
+    async function main() {
+      await liff.init({ liffId: "YOUR-LIFF-ID" })
+      if (liff.isInClient()) {
+        getUserProfile()
+      } else {
+        if (liff.isLoggedIn()) {
+          getUserProfile()
+          document.getElementById("btnLogIn").style.display = "none"
+          document.getElementById("btnLogOut").style.display = "block"
+        } else {
+          document.getElementById("btnLogIn").style.display = "block"
+          document.getElementById("btnLogOut").style.display = "none"
         }
-    });
-}
-</script>
-
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-  </body>
+      }
+    }
+    main()
+  </script>
+</body>
 </html>
