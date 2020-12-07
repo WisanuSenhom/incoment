@@ -22,7 +22,7 @@
       window.location.reload()
     }
     function logIn() {
-      liff.login({ redirectUri: "https://liff.line.me/1654797991-WVdogNoa" })
+      liff.login({ redirectUri: window.location.href })
     }
     async function getUserProfile() {
       const profile = await liff.getProfile()
